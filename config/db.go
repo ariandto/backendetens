@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ariandto/backendazko/models"
+	"github.com/ariandto/backendetens/models"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -30,16 +30,16 @@ func ConnectDB() *gorm.DB {
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("❌ DB connection failed:", err)
+		log.Fatal("❌ Gagal koneksi ke database:", err)
 	}
 
-	// Auto migrate
-	err = db.AutoMigrate(&models.User{})
+	// Auto migrate hanya untuk Product
+	err = db.AutoMigrate(&models.Product{})
 	if err != nil {
-		log.Fatal("❌ Gagal migrasi tabel User:", err)
+		log.Fatal("❌ Gagal migrasi tabel Product:", err)
 	}
 
 	DB = db
-	log.Println("✅ Connected to MySQL & migrated User model")
-	return db // ← tambahkan return ini
+	log.Println("✅ Terkoneksi ke MySQL & migrasi tabel Product selesai")
+	return db
 }
