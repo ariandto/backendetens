@@ -13,20 +13,24 @@ import (
 )
 
 func main() {
-	// Load env
-	err := godotenv.Load()
-	if err != nil {
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
 		log.Println("⚠️ .env file not found")
 	}
 
-	// DB
+	// Initialize Firebase Admin SDK
+	config.InitFirebase()
+
+	// Connect to Database
 	config.ConnectDB()
 
-	// Router
+	// Initialize Gin router
 	router := gin.Default()
+
+	// Serve static files (e.g., uploaded images)
 	router.Static("/uploads", "./uploads")
 
-	// ✅ Custom CORS
+	// Custom CORS configuration
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:5173",
@@ -40,10 +44,12 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	// Route
+	// Register all product-related routes
 	routes.RegisterProductRoutes(router)
 
-	// Run server
+	routes.RegisterAuthRoutes(router)
+
+	// Start server
 	port := os.Getenv("APP_PORT")
 	if port == "" {
 		port = "5700"

@@ -1,0 +1,11 @@
+package routes
+
+import (
+	"github.com/ariandto/backendetens/handlers"
+	"github.com/gin-gonic/gin"
+)
+
+func RegisterAuthRoutes(r *gin.Engine) {
+	r.POST("/api/login", handlers.LoginWithFirebase)
+	r.GET("/api/me", handlers.GetMe)
+}

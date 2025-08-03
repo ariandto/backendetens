@@ -2,15 +2,17 @@ package routes
 
 import (
 	"github.com/ariandto/backendetens/handlers"
+	"github.com/ariandto/backendetens/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterProductRoutes(r *gin.Engine) {
-	api := r.Group("/api/products")
+	// middleware auth dari cookie
+	api := r.Group("/api/products", middlewares.CheckAuthFromCookie())
 	{
-		api.GET("", handlers.GetProducts)           // ✅ TANPA "/"
-		api.POST("/upload", handlers.UploadProduct) // ✅ DI DALAM group
-		api.PUT("/:id", handlers.UpdateProduct)
-		api.DELETE("/:id", handlers.DeleteProduct)
+		api.GET("", handlers.GetProducts)
+		api.POST("/upload", middlewares.CheckAdminOnly(), handlers.UploadProduct)
+		api.PUT("/:id", middlewares.CheckAdminOnly(), handlers.UpdateProduct)
+		api.DELETE("/:id", middlewares.CheckAdminOnly(), handlers.DeleteProduct)
 	}
 }
