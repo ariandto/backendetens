@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 
+	"time"
+
 	"github.com/ariandto/backendetens/config"
 	"github.com/gin-gonic/gin"
 )
@@ -24,33 +26,37 @@ func LoginWithFirebase(c *gin.Context) {
 		return
 	}
 
-	// Verifikasi token Firebase
+	// Verifikasi ID token
 	token, err := client.VerifyIDToken(c, req.IDToken)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token tidak valid"})
 		return
 	}
 
-	email, _ := token.Claims["email"].(string)
-	name, _ := token.Claims["name"].(string)
+	// Buat session cookie dari ID token
+	expiresIn := time.Hour * 24 * 5 // 5 hari
+	sessionCookie, err := client.SessionCookie(c, req.IDToken, expiresIn)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal membuat session cookie"})
+		return
+	}
 
-	// Set session cookie (HTTP-only)
+	// Set cookie HTTP-Only
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:     "session",
-		Value:    req.IDToken,
+		Value:    sessionCookie, // 🔁 session cookie, bukan ID token lagi
+		MaxAge:   int(expiresIn.Seconds()),
 		HttpOnly: true,
-		Secure:   false, // set true jika menggunakan HTTPS
 		SameSite: http.SameSiteLaxMode,
+		Secure:   false, // set true jika HTTPS
 		Path:     "/",
-		MaxAge:   60 * 60 * 24 * 7, // 7 hari
 	})
 
-	// Kirim respons sukses (tanpa token)
 	c.JSON(http.StatusOK, gin.H{
 		"uid":   token.UID,
-		"email": email,
-		"name":  name,
-		"admin": email == os.Getenv("ADMIN_EMAIL"), // misal:
+		"email": token.Claims["email"],
+		"name":  token.Claims["name"],
+		"admin": token.Claims["email"] == os.Getenv("ADMIN_EMAIL"),
 	})
 }
 
