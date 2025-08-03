@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/ariandto/backendazko/config"
-	"github.com/ariandto/backendazko/models"
+	"github.com/ariandto/backendetens/config"
+	"github.com/ariandto/backendetens/models"
 
 	"github.com/gin-gonic/gin"
 )

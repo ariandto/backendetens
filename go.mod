@@ -1,4 +1,4 @@
-module github.com/ariandto/backendazko
+module github.com/ariandto/backendetens
 
 go 1.24.4
 

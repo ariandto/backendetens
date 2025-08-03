@@ -13,7 +13,7 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDB() {
+func ConnectDB() *gorm.DB {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("⚠️  .env file not found. Using environment variables directly.")
@@ -33,7 +33,7 @@ func ConnectDB() {
 		log.Fatal("❌ DB connection failed:", err)
 	}
 
-	// ✅ Auto migrate struct User ke database
+	// Auto migrate
 	err = db.AutoMigrate(&models.User{})
 	if err != nil {
 		log.Fatal("❌ Gagal migrasi tabel User:", err)
@@ -41,4 +41,5 @@ func ConnectDB() {
 
 	DB = db
 	log.Println("✅ Connected to MySQL & migrated User model")
+	return db // ← tambahkan return ini
 }
