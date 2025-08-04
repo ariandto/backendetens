@@ -9,7 +9,7 @@ func RegisterProductRoutes(r *gin.Engine) {
 	api := r.Group("/api/products")
 	{
 		api.GET("", handlers.GetProducts)
-		api.POST("", handlers.CreateProduct) // gunakan CreateProduct, bukan upload
+		api.POST("/upload", handlers.UploadProduct)
 		api.PUT("/:id", handlers.UpdateProduct)
 		api.DELETE("/:id", handlers.DeleteProduct)
 	}
