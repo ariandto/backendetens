@@ -89,3 +89,18 @@ func GetMe(c *gin.Context) {
 		"admin": email == os.Getenv("ADMIN_EMAIL"),
 	})
 }
+
+func Logout(c *gin.Context) {
+	// Hapus cookie 'session' dengan overwrite kosong
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "session",
+		Value:    "",
+		MaxAge:   -1, // menghapus cookie
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+		Secure:   false, // set true jika HTTPS
+	})
+
+	c.JSON(http.StatusOK, gin.H{"message": "Logout berhasil"})
+}
