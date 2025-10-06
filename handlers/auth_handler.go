@@ -1,4 +1,5 @@
 package handlers
+
 //oke
 import (
 	"net/http"
@@ -99,7 +100,7 @@ func Logout(c *gin.Context) {
 		Path:     "/",
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   false, // set true jika HTTPS
+		Secure:   true, // set true jika HTTPS
 	})
 
 	c.JSON(http.StatusOK, gin.H{"message": "Logout berhasil"})
