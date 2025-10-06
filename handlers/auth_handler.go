@@ -48,7 +48,7 @@ func LoginWithFirebase(c *gin.Context) {
 		MaxAge:   int(expiresIn.Seconds()),
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   false, // set true jika HTTPS
+		Secure:   true, // set true jika HTTPS
 		Path:     "/",
 	})
 
